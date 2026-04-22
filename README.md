@@ -1,4 +1,59 @@
-# jdbcwizard-demo-code
+# jdbcwizard-dbhell-postgres
+
+This repository contains two parallel DDL-torture corpora for the same
+purpose — exercising everything syntactically possible — one targeted at
+Oracle, one at PostgreSQL 18.
+
+## Postgres 18 port (`Sql/pg/`)
+
+The Postgres corpus lives under `Sql/pg/` and is driven by
+[`pg_dbhell.sql`](Sql/pg/pg_dbhell.sql), which `\i`-includes 26 feature
+files in order. Run it against a fresh database with:
+
+```bash
+createdb pg_dbhell_test
+psql -v ON_ERROR_STOP=1 -d pg_dbhell_test -f Sql/pg/pg_dbhell.sql
+```
+
+Optional extensions are guarded by `psql` conditionals:
+
+```bash
+psql -v ON_ERROR_STOP=1 -v postgis=1 -v postgres_fdw=1 \
+     -d pg_dbhell_test -f Sql/pg/pg_dbhell.sql
+```
+
+Mapping from Oracle features that have no Postgres equivalent:
+
+| Oracle construct                  | Postgres treatment                            |
+|-----------------------------------|-----------------------------------------------|
+| `NUMBER(p,s)`                     | `numeric(p,s)`                                |
+| `VARCHAR2`, `CHAR`                | `varchar`, `char`                             |
+| `LONG`, `LONG RAW`, `CLOB`, `BLOB`| `text`, `bytea`                               |
+| `BFILE` + `DIRECTORY`             | composite `(dir_name text, file_name text)`   |
+| `ROWID`, `UROWID`                 | `tid` column + surrogate `bigint` identity    |
+| `XMLTYPE`                         | native `xml`                                  |
+| `SDO_GEOMETRY`                    | PostGIS `geometry` (optional)                 |
+| Packages                          | dedicated schema of functions                 |
+| Synonyms                          | updatable views                               |
+| DB links                          | `postgres_fdw` + `dblink` extensions          |
+| `NATURAL` / `POSITIVE` / `SIGNTYPE` subtypes | `CREATE DOMAIN` with `CHECK`        |
+| Nested tables, VARRAYs            | PG arrays and composite types                 |
+
+The corpus also exercises Postgres-18-specific surface that has no Oracle
+analogue at all: virtual generated columns, `PRIMARY KEY … WITHOUT
+OVERLAPS`, temporal `FOREIGN KEY … PERIOD`, `uuidv7()`, `MERGE …
+RETURNING`, `NOT NULL … NOT VALID` with `VALIDATE CONSTRAINT`, the
+builtin collation provider, row-level security with `FORCE`,
+RANGE/LIST/HASH/sub-partitioning with `ATTACH`/`DETACH`, and
+`EXCLUDE` constraints via `btree_gist`. See
+[`21_pg18_new_features.sql`](Sql/pg/21_pg18_new_features.sql).
+
+Verified on Postgres 18.3 with `ON_ERROR_STOP=1` — 630 top-level
+statements, 0 errors; final inventory is 83 tables, 78 indexes, 12
+views, 1 materialized view, 42 sequences, 6 partitioned indexes, 5
+partitioned tables, 7 composite types, 1 foreign table.
+
+## Oracle corpus (`Sql/`)
 
 * This is a set of Oracle schemas designed to fully exercise what is syntacticly possible
 * JDBCWizard can generate Java code to run all the examples here
