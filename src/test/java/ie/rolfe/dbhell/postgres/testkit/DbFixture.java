@@ -1,4 +1,4 @@
-package io.dbhell.testkit;
+package ie.rolfe.dbhell.postgres.testkit;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

@@ -1,6 +1,6 @@
-package io.dbhell.write;
+package ie.rolfe.dbhell.postgres.write;
 
-import io.dbhell.testkit.DbFixture;
+import ie.rolfe.dbhell.postgres.testkit.DbFixture;
 
 import java.math.BigDecimal;
 import java.sql.ResultSet;

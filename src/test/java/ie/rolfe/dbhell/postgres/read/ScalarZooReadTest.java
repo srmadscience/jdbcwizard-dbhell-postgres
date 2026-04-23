@@ -1,6 +1,6 @@
-package io.dbhell.read;
+package ie.rolfe.dbhell.postgres.read;
 
-import io.dbhell.testkit.DbFixture;
+import ie.rolfe.dbhell.postgres.testkit.DbFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.postgresql.util.PGInterval;

@@ -1,11 +1,11 @@
-package io.dbhell.write;
+package ie.rolfe.dbhell.postgres.write;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
-import static io.dbhell.write.NumericBindingFixture.bindAndCheck;
+import static ie.rolfe.dbhell.postgres.write.NumericBindingFixture.bindAndCheck;
 
 /** n_double (float8): one @Test per JDBC numeric binding. */
 @DisplayName("scalar_zoo.n_double — JDBC bindings")
